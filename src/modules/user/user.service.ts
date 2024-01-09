@@ -15,7 +15,7 @@ export default class UserService implements UserServiceInterface {
   constructor(
     @inject(Component.LoggerInterface) private readonly logger: LoggerInterface,
     @inject(Component.UserModel) private readonly userModel: types.ModelType<UserEntity>,
-    @inject(Component.OfferModel) private readonly offerModel: types.ModelType<OfferEntity>,
+    @inject(Component.OfferModel) private readonly offerModel: types.ModelType<OfferEntity>
   ) {
   }
 
@@ -23,7 +23,7 @@ export default class UserService implements UserServiceInterface {
     const user = new UserEntity(dto);
     user.setPassword(dto.password, salt);
 
-    const result = await this.userModel.create(dto);
+    const result = await this.userModel.create(user);
     this.logger.info(`New user created with: ${user.email}`);
 
     return result;

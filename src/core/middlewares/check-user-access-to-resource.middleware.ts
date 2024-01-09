@@ -2,8 +2,8 @@ import { StatusCodes } from 'http-status-codes';
 import { NextFunction, Response } from 'express';
 import { MiddlewareInterface } from './middleware.interface.js';
 import {HttpError} from '../http/http.errors.js';
-import {FindResourceInterface} from '../../types/find-resource.interface';
-import {ExtendedRequestInterface} from '../../types/extended-request';
+import {FindResourceInterface} from '../../types/find-resource.interface.js';
+import {ExtendedRequestInterface} from '../../types/extended-request.js';
 
 export class CheckUserAccessToResourceMiddleware implements MiddlewareInterface {
   constructor(

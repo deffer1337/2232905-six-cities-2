@@ -1,5 +1,5 @@
 import pkg from '../../../package.json' assert { type: 'json' };
-import { CliCommandInterface } from './cli-command.interface';
+import { CliCommandInterface } from './cli-command.interface.js';
 import chalk from 'chalk';
 
 export default class VersionCommand implements CliCommandInterface {

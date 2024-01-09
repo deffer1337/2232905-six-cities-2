@@ -1,8 +1,8 @@
 import {inject, injectable} from 'inversify';
-import {IssuedTokenServiceInterface} from './token-service.interface';
-import {Component} from '../../types/component.enum';
+import {IssuedTokenServiceInterface} from './token-service.interface.js';
+import {Component} from '../../types/component.enum.js';
 import {types} from '@typegoose/typegoose';
-import {IssuedTokenEntity} from './token.entity';
+import {IssuedTokenEntity} from './token.entity.js';
 
 
 @injectable()

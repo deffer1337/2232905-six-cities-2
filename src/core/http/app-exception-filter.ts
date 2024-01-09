@@ -5,7 +5,7 @@ import {Component} from '../../types/component.enum.js';
 import {LoggerInterface} from '../logger/logger.interface.js';
 import {HttpError} from './http.errors.js';
 import {createErrorObject} from '../helpers/common.js';
-import {ExceptionFilter} from './exception-filter.interface';
+import {ExceptionFilter} from './exception-filter.interface.js';
 
 
 @injectable()

@@ -3,10 +3,10 @@ import { jwtVerify } from 'jose';
 import { StatusCodes } from 'http-status-codes';
 import { createSecretKey } from 'node:crypto';
 import {HttpError} from '../http/http.errors.js';
-import {MiddlewareInterface} from '../middlewares/middleware.interface';
+import {MiddlewareInterface} from '../middlewares/middleware.interface.js';
 import {inject} from 'inversify';
-import {Component} from '../../types/component.enum';
-import {IssuedTokenServiceInterface} from '../../modules/token/token-service.interface';
+import {Component} from '../../types/component.enum.js';
+import {IssuedTokenServiceInterface} from '../../modules/token/token-service.interface.js';
 
 export class AuthMiddleware implements MiddlewareInterface {
   constructor(
@@ -26,7 +26,7 @@ export class AuthMiddleware implements MiddlewareInterface {
     try {
       const { payload } = await jwtVerify(
         token,
-        createSecretKey(this.jwtSecret, 'utf-8')
+        createSecretKey(this.jwtSecret, 'utf-8'),
       );
 
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment

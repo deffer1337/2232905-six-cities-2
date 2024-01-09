@@ -6,7 +6,7 @@ import {LoggerInterface} from '../../core/logger/logger.interface.js';
 import {HttpMethod} from '../../types/http.method.enum.js';
 import {fillDTO} from '../../core/helpers/common.js';
 import {UserServiceInterface} from './user-service.interface.js';
-import UserDto from './dto/user.dto';
+import UserDto from './dto/user.dto.js';
 import {HttpError} from '../../core/http/http.errors.js';
 import {StatusCodes} from 'http-status-codes';
 import {ConfigInterface} from '../../core/config/config.interface.js';
@@ -21,24 +21,24 @@ import {ValidateDTOMiddleware} from '../../core/middlewares/validate-dto.middlew
 import {CheckUserAuthMiddleware} from '../../core/middlewares/check-user-auth.middleware.js';
 import {ValidateObjectIdMiddleware} from '../../core/middlewares/validate-object-id.midlleware.js';
 import {UploadFileMiddleware} from '../../core/middlewares/upload-file.middleware.js';
-import AvatarRdo from './rdo/avatar.rdo';
+import AvatarRdo from './rdo/avatar.rdo.js';
 
 
 @injectable()
 export default class UserController extends Controller {
   constructor(@inject(Component.LoggerInterface) logger: LoggerInterface,
-              @inject(Component.OfferServiceInterface) private readonly userService: UserServiceInterface,
+              @inject(Component.UserServiceInterface) private readonly userService: UserServiceInterface,
               @inject(Component.ConfigInterface) private readonly configService: ConfigInterface<ConfigSchema>,
               @inject(Component.TokenServiceInterface) private readonly tokenService: TokenServiceInterface,
               @inject(Component.IssuedTokenServiceInterface) private readonly issuedTokenService: IssuedTokenServiceInterface
   ) {
     super(logger);
 
-    this.logger.info('Register routes for CategoryController…');
+    this.logger.info('Register routes for UserController…');
 
     this.addRoute({
       path: '/sign-up',
-      method: HttpMethod.Get,
+      method: HttpMethod.Post,
       handler: this.signUp,
       middlewares: [
         new ValidateDTOMiddleware(UserDto),
@@ -130,6 +130,7 @@ export default class UserController extends Controller {
         'UserController'
       );
     }
+
     const rawToken = await this.tokenService.getRawToken(token);
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment

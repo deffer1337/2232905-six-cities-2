@@ -2,8 +2,8 @@ import {inject, injectable} from 'inversify';
 import {DocumentType, types} from '@typegoose/typegoose';
 import {CommentServiceInterface} from './comment-service.interface.js';
 import {Component} from '../../types/component.enum.js';
-import {CommentEntity} from './comment.entity';
-import CommentDto from './dto/comment.dto';
+import {CommentEntity} from './comment.entity.js';
+import CommentDto from './dto/comment.dto.js';
 import {OfferServiceInterface} from '../offer/offer-service.interface.js';
 import {SortType} from '../../types/sort-type.enum.js';
 

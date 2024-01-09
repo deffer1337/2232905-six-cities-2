@@ -12,7 +12,7 @@ import {OfferModel} from '../../modules/offer/offer.entity.js';
 import {OfferType} from '../../types/offer.type.js';
 import {DEFAULT_DB_PORT} from '../helpers/consts.js';
 import {getMongoURI} from '../helpers/db.js';
-import OfferDto from '../../modules/offer/dto/offer.dto';
+import OfferDto from '../../modules/offer/dto/offer.dto.js';
 
 export default class ImportCommand implements CliCommandInterface {
   public readonly name = '--import';

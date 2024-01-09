@@ -81,8 +81,8 @@ export default class RestApplication {
   public async init() {
     await this.initDb();
     await this.initApp();
-    await this.initRoutes();
     await this.initMiddleware();
+    await this.initRoutes();
     await this.initExceptionFilters();
   }
 }
