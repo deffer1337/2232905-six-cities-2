@@ -13,11 +13,10 @@ import {ConfigInterface} from '../../core/config/config.interface.js';
 import {ConfigSchema} from '../../core/config/config.schema.js';
 import UserRdo from './rdo/user.rdo.js';
 import LoginUserDto from './dto/login-user.dto';
-import {OfferLiteRdo} from '../offer/rdo/offerLite.rdo';
 import {TokenServiceInterface} from '../../core/auth/token-service.interface';
 import SignInUserRdo from './rdo/signin.user.rdo';
-import {IssuedTokenServiceInterface} from "../token/token-service.interface";
-import {ExtendedRequestInterface} from "../../types/extended-request";
+import {IssuedTokenServiceInterface} from '../token/token-service.interface';
+import {ExtendedRequestInterface} from '../../types/extended-request';
 
 
 @injectable()
@@ -35,9 +34,6 @@ export default class UserController extends Controller {
     this.addRoute({path: '/sign-up', method: HttpMethod.Get, handler: this.signUp});
     this.addRoute({path: '/sign-in', method: HttpMethod.Post, handler: this.signIn});
     this.addRoute({path: '/sign-out', method: HttpMethod.Post, handler: this.logout});
-    this.addRoute({path: '/favorite/:offerId', method: HttpMethod.Post, handler: this.addFavorite});
-    this.addRoute({path: '/favorite/:offerId', method: HttpMethod.Delete, handler: this.deleteFavorite});
-    this.addRoute({path: '/favorite', method: HttpMethod.Get, handler: this.getFavorite});
   }
 
   public async signUp(
@@ -79,10 +75,11 @@ export default class UserController extends Controller {
       }
     );
 
-    const rawToken = await this.tokenService.getRawToken(token)
+    const rawToken = await this.tokenService.getRawToken(token);
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    await this.issuedTokenService.issue(user.id, rawToken.exp, rawToken.jti)
+    await this.issuedTokenService.issue(user.id, rawToken.exp, rawToken.jti);
 
     this.ok(res, {
       ...fillDTO(SignInUserRdo, user),
@@ -100,26 +97,12 @@ export default class UserController extends Controller {
         'UserController'
       );
     }
-    const rawToken = await this.tokenService.getRawToken(token)
+    const rawToken = await this.tokenService.getRawToken(token);
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     await this.issuedTokenService.revoke(rawToken.jti);
 
     this.noContent(res, {token});
-  }
-
-  public async getFavorite({body}: Request<Record<string, unknown>, Record<string, unknown>, {userId: string}>, _res: Response): Promise<void> {
-    const result = await this.userService.findFavorites(body.userId);
-    this.ok(_res, fillDTO(OfferLiteRdo, result));
-  }
-
-  public async addFavorite({body}: Request<Record<string, unknown>, Record<string, unknown>, {offerId: string, userId: string}>, res: Response): Promise<void> {
-    await this.userService.addToFavoritesById(body.offerId, body.userId);
-    this.noContent(res, {message: 'Предложение добавлено в избранное'});
-  }
-
-  public async deleteFavorite({body}: Request<Record<string, unknown>, Record<string, unknown>, {offerId: string, userId: string}>, res: Response): Promise<void> {
-    await this.userService.removeFromFavoritesById(body.offerId, body.userId);
-    this.noContent(res, {message: 'Предложение удалено из избранного'});
   }
 }
