@@ -1,14 +1,13 @@
 import {DocumentType} from '@typegoose/typegoose';
 import {OfferEntity} from './offer.entity.js';
-import CreateOfferDto from './dto/create-offer.dto.js';
-import {UpdateOfferDto} from './dto/update-offer.dto';
+import OfferDto from './dto/offer.dto';
 
 export interface OfferServiceInterface {
-  create(dto: CreateOfferDto): Promise<DocumentType<OfferEntity>>;
+  create(dto: OfferDto): Promise<DocumentType<OfferEntity>>;
   findById(offerId: string): Promise<DocumentType<OfferEntity> | null>;
-  find(count: number): Promise<DocumentType<OfferEntity>[]>;
+  find(count: number | undefined): Promise<DocumentType<OfferEntity>[]>;
   deleteById(offerId: string): Promise<DocumentType<OfferEntity> | null>;
-  updateById(offerId: string, dto: UpdateOfferDto): Promise<DocumentType<OfferEntity> | null>;
+  updateById(offerId: string, dto: OfferDto): Promise<DocumentType<OfferEntity> | null>;
   findPremiumByCity(city: string): Promise<DocumentType<OfferEntity>[]>;
   incComment(offerId: string): Promise<DocumentType<OfferEntity> | null>;
   exists(documentId: string): Promise<boolean>;

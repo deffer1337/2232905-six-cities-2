@@ -1,6 +1,6 @@
 import {UserEntity} from './user.entity.js';
 import {DocumentType} from '@typegoose/typegoose/lib/types.js';
-import CreateUserDto from './dto/create-user.dto.js';
+import CreateUserDto from './dto/user.dto';
 import {UserServiceInterface} from './user-service.interface.js';
 import {inject, injectable} from 'inversify';
 import {Component} from '../../types/component.enum.js';
@@ -48,7 +48,7 @@ export default class UserService implements UserServiceInterface {
     }
 
     return this.userModel
-      .find({_id: { $in: offers.favorite }});
+      .find({_id: { $in: offers.favorites }});
   }
 
   public async findById(userId: string): Promise<DocumentType<UserEntity> | null> {
@@ -61,5 +61,14 @@ export default class UserService implements UserServiceInterface {
 
   public removeFromFavoritesById(userId: string, offerId: string): Promise<DocumentType<OfferEntity>[] | null> {
     return this.userModel.findByIdAndUpdate(userId, {$pull: {favorite: offerId}, new: true});
+  }
+
+  public async verifyUser(email: string, password: string, salt: string): Promise<DocumentType<UserEntity> | null> {
+    const user = await this.findByEmail(email);
+    if (user?.verifyPassword(password, salt)) {
+      return user;
+    } else {
+      return null;
+    }
   }
 }

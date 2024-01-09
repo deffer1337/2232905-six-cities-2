@@ -1,5 +1,5 @@
 import {OfferType} from '../../types/offer.type';
-import {HousingType} from '../../types/house-type.enum';
+import {HouseType} from '../../types/house-type.enum';
 import {Facilities} from '../../types/facilities.enum';
 import {UserTypeEnum} from '../../types/user-type.enum';
 import {CityEnum} from '../../types/city.enum';
@@ -36,7 +36,7 @@ export function createOffer(offer: string): OfferType {
     premium: premium as unknown as boolean,
     favorite: favorite as unknown as boolean,
     rating: parseFloat(rating),
-    housingType: housingType as unknown as HousingType,
+    housingType: housingType as unknown as HouseType,
     roomCount: parseInt(roomCount, 10),
     guestCount: parseInt(guestCount, 10),
     cost: parseInt(cost, 10),

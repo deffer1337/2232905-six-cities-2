@@ -2,7 +2,7 @@ import {generateRandomValue, getRandomItem, getRandomItems} from '../core/helper
 import {MockData} from '../types/mock-data.type.js';
 import {OfferGeneratorInterface} from './offer-generator.interface.js';
 import {CityEnum} from '../types/city.enum.js';
-import {HousingType} from '../types/house-type.enum.js';
+import {HouseType} from '../types/house-type.enum.js';
 import {Facilities} from '../types/facilities.enum.js';
 import {UserTypeEnum} from '../types/user-type.enum.js';
 import dayjs from 'dayjs';
@@ -30,7 +30,7 @@ export default class OfferGenerator implements OfferGeneratorInterface {
     const premium = getRandomItem<string>(['true', 'false']);
     const favorite = getRandomItem<string>(['true', 'false']);
     const rating = generateRandomValue(MIN_RATING, MAX_RATING, 1);
-    const housingType = getRandomItem([HousingType.House, HousingType.Hotel, HousingType.Room, HousingType.Apartment]);
+    const housingType = getRandomItem([HouseType.House, HouseType.Hotel, HouseType.Room, HouseType.Apartment]);
     const roomCount = generateRandomValue(MIN_COUNT_ROOM, MAX_COUNT_ROOM);
     const guestCount = generateRandomValue(MIN_COUNT, MAX_COUNT);
     const cost = generateRandomValue(MIN_COST, MAX_COST);
