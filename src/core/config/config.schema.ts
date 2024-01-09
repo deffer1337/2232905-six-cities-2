@@ -11,6 +11,8 @@ export type ConfigSchema = {
   DB_PASSWORD: string;
   DB_PORT: string;
   DB_NAME: string;
+  JWT_SECRET: string;
+  JWT_ALGORITHM: string;
 }
 
 export const configSchema = convict<ConfigSchema>({
@@ -55,5 +57,17 @@ export const configSchema = convict<ConfigSchema>({
     format: String,
     env: 'DB_NAME',
     default: 'buy-and-sell'
+  },
+  JWT_SECRET: {
+    doc: 'JWT secret string',
+    format: String,
+    env: 'JWT_SECRET',
+    default: 'six-sities-yoyoyo'
+  },
+  JWT_ALGORITHM: {
+    doc: 'JWT algorithm',
+    format: String,
+    env: 'JWT_ALGORITHM',
+    default: 'HS256'
   }
 });

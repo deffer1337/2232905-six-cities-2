@@ -15,14 +15,12 @@ import {UserModel} from '../../modules/user/user.entity.js';
 import {OfferType} from '../../types/offer.type.js';
 import {DEFAULT_DB_PORT, DEFAULT_USER_PASSWORD} from '../helpers/consts.js';
 import {getMongoURI} from '../helpers/db.js';
-import {CommentServiceInterface} from '../../modules/comment/comment-service.interface';
 
 
 export default class ImportCommand implements CliCommandInterface {
   public readonly name = '--import';
   private userService!: UserServiceInterface;
   private offerService!: OfferServiceInterface;
-  private commentService!: CommentServiceInterface;
   private dbService!: DBClientInterface;
   private readonly logger: LoggerInterface;
   private salt!: string;
@@ -32,7 +30,7 @@ export default class ImportCommand implements CliCommandInterface {
     this.onComplete = this.onComplete.bind(this);
 
     this.logger = new ConsoleLoggerService();
-    this.offerService = new OfferService(this.logger, OfferModel, this.commentService);
+    this.offerService = new OfferService(this.logger, OfferModel);
     this.userService = new UserService(this.logger, UserModel);
     this.dbService = new MongoClientService(this.logger);
   }

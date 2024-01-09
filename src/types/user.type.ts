@@ -4,5 +4,5 @@ export type UserType = {
   username: string;
   email: string;
   avatar?: string;
-  type : UserTypeEnum;
+  type: UserTypeEnum;
 }
