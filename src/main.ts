@@ -6,6 +6,7 @@ import {createApplicationContainer} from './app/rest-api.container';
 import {createOfferContainer} from './modules/offer/offer.container';
 import {createUserContainer} from './modules/user/user.container';
 import {createCommentContainer} from './modules/comment/comment.container';
+import {createIssuedTokenContainer} from "./modules/token/token.container";
 
 
 const mainContainer = Container.merge(
@@ -13,6 +14,7 @@ const mainContainer = Container.merge(
   createUserContainer(),
   createOfferContainer(),
   createCommentContainer(),
+  createIssuedTokenContainer(),
 );
 const application = mainContainer.get<RestApplication>(Component.RestApplication);
 await application.init();

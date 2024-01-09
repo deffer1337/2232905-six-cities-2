@@ -22,6 +22,7 @@
     "@types/convict": "6.1.1",
     "@types/convict-format-with-validator": "6.0.2",
     "@types/node": "18.16.3",
+    "@types/uuid": "^9.0.7",
     "@typescript-eslint/eslint-plugin": "5.46.0",
     "@typescript-eslint/parser": "5.46.0",
     "eslint": "8.39.0",

@@ -7,6 +7,7 @@ import {Component} from '../../types/component.enum.js';
 import {MAX_OFFERS_COUNT, MAX_PREMIUM_OFFERS_COUNT} from '../../core/helpers/consts.js';
 import {SortType} from '../../types/sort-type.enum.js';
 
+
 @injectable()
 export default class OfferService implements OfferServiceInterface {
   constructor(
@@ -18,9 +19,9 @@ export default class OfferService implements OfferServiceInterface {
     return await this.offerModel.create(dto);
   }
 
-  public async findById(offerId: string): Promise<DocumentType<OfferEntity> | null> {
+  public async findById(resourceId: string): Promise<DocumentType<OfferEntity> | null> {
     return this.offerModel
-      .findById(offerId)
+      .findById(resourceId)
       .populate('userId')
       .exec();
   }
@@ -74,8 +75,8 @@ export default class OfferService implements OfferServiceInterface {
       .exec();
   }
 
-  public async exists(documentId: string): Promise<boolean> {
+  public async exists(resourceId: string): Promise<boolean> {
     return (await this.offerModel
-      .exists({_id: documentId})) !== null;
+      .exists({_id: resourceId})) !== null;
   }
 }

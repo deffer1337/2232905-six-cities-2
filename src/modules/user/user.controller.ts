@@ -1,5 +1,5 @@
 import { inject, injectable } from 'inversify';
-import { Request, Response } from 'express';
+import {Request, Response} from 'express';
 import {Component} from '../../types/component.enum.js';
 import {Controller} from '../../core/controller/controller.abstract.js';
 import {LoggerInterface} from '../../core/logger/logger.interface.js';
@@ -16,6 +16,8 @@ import LoginUserDto from './dto/login-user.dto';
 import {OfferLiteRdo} from '../offer/rdo/offerLite.rdo';
 import {TokenServiceInterface} from '../../core/auth/token-service.interface';
 import SignInUserRdo from './rdo/signin.user.rdo';
+import {IssuedTokenServiceInterface} from "../token/token-service.interface";
+import {ExtendedRequestInterface} from "../../types/extended-request";
 
 
 @injectable()
@@ -23,7 +25,8 @@ export default class UserController extends Controller {
   constructor(@inject(Component.LoggerInterface) logger: LoggerInterface,
               @inject(Component.OfferServiceInterface) private readonly userService: UserServiceInterface,
               @inject(Component.ConfigInterface) private readonly configService: ConfigInterface<ConfigSchema>,
-              @inject(Component.TokenServiceInterface) private readonly tokenService: TokenServiceInterface
+              @inject(Component.TokenServiceInterface) private readonly tokenService: TokenServiceInterface,
+              @inject(Component.IssuedTokenServiceInterface) private readonly issuedTokenService: IssuedTokenServiceInterface
   ) {
     super(logger);
 
@@ -75,18 +78,34 @@ export default class UserController extends Controller {
         id: user.id
       }
     );
+
+    const rawToken = await this.tokenService.getRawToken(token)
+
+    // @ts-ignore
+    await this.issuedTokenService.issue(user.id, rawToken.exp, rawToken.jti)
+
     this.ok(res, {
       ...fillDTO(SignInUserRdo, user),
       token
     });
   }
 
-  public async logout(_req: Request, _res: Response): Promise<void> {
-    throw new HttpError(
-      StatusCodes.NOT_IMPLEMENTED,
-      'Not implemented',
-      'UserController',
-    );
+  public async logout(req: ExtendedRequestInterface, res: Response): Promise<void> {
+    const [, token] = String(req.headers.authorization?.split(' '));
+
+    if (!req.user) {
+      throw new HttpError(
+        StatusCodes.UNAUTHORIZED,
+        'Unauthorized',
+        'UserController'
+      );
+    }
+    const rawToken = await this.tokenService.getRawToken(token)
+
+    // @ts-ignore
+    await this.issuedTokenService.revoke(rawToken.jti);
+
+    this.noContent(res, {token});
   }
 
   public async getFavorite({body}: Request<Record<string, unknown>, Record<string, unknown>, {userId: string}>, _res: Response): Promise<void> {

@@ -9,7 +9,7 @@ export interface UserServiceInterface {
   findOrCreate(dto: CreateUserDto, salt: string): Promise<DocumentType<UserEntity>>;
   findById(userId: string): Promise<DocumentType<UserEntity> | null>;
   findFavorites(userId: string): Promise<DocumentType<OfferEntity>[]>
-  addToFavoritesById(userId: string, offerId: string): Promise<DocumentType<OfferEntity>[] | null>;
-  removeFromFavoritesById(userId: string, offerId: string): Promise<DocumentType<OfferEntity>[] | null>;
+  addToFavoritesById(userId: string, offerId: string): Promise<void>;
+  removeFromFavoritesById(userId: string, offerId: string): Promise<void>;
   verifyUser(email: string, password: string, salt: string): Promise<DocumentType<UserEntity> | null>;
 }

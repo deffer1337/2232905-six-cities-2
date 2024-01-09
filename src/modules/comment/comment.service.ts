@@ -3,12 +3,11 @@ import {DocumentType, types} from '@typegoose/typegoose';
 import {CommentServiceInterface} from './comment-service.interface.js';
 import {Component} from '../../types/component.enum.js';
 import {CommentEntity} from './comment.entity';
+import CommentDto from './dto/comment.dto';
 import {OfferServiceInterface} from '../offer/offer-service.interface.js';
 import {SortType} from '../../types/sort-type.enum.js';
-import CreateCommentDto from './dto/create-comment.dto';
-import {COMMENTS_COUNT} from '../../core/helpers/consts';
 
-
+const COMMENTS_COUNT = 50;
 @injectable()
 export default class CommentService implements CommentServiceInterface {
   constructor(
@@ -17,26 +16,34 @@ export default class CommentService implements CommentServiceInterface {
   ) {
   }
 
-  public async createForOffer(dto: CreateCommentDto): Promise<DocumentType<CommentEntity>> {
-    const comment = await this.commentModel.create(dto);
-    const offerId = dto.offerId;
+  public async createForOffer(userId: string, offerId: string, dto: CommentDto): Promise<DocumentType<CommentEntity>> {
+    const comment = await this.commentModel.create({...dto, offerId: offerId, userId: userId});
     await this.offerService.incComment(offerId);
 
-    const allRating = this.commentModel.find({offerId}).select('rating');
     const offer = await this.offerService.findById(offerId);
 
     const count = offer?.commentsCount ?? 1;
-    const newRating = allRating['rating'] / (count);
+    const rating = offer?.rating ?? 0;
+    const newRating = (rating + dto.rating) / count;
     await this.offerService.updateRating(offerId, newRating);
-    return comment.populate('authorId');
+    return comment;
+  }
+
+
+  public findById(commentId: string): Promise<DocumentType<CommentEntity> | null> {
+    return this.commentModel
+      .findById(commentId)
+      .populate('userId')
+      .exec();
   }
 
   public async findByOfferId(offerId: string): Promise<DocumentType<CommentEntity>[]> {
     return this.commentModel
       .find({offerId})
       .sort({createdAt: SortType.Desc})
-      .populate('authorId')
-      .limit(COMMENTS_COUNT);
+      .populate('userId')
+      .limit(COMMENTS_COUNT)
+      .exec();
   }
 
   public async deleteByOfferId(offerId: string): Promise<number> {
