@@ -7,13 +7,15 @@ import {Component} from '../../types/component.enum.js';
 import {types} from '@typegoose/typegoose';
 import {LoggerInterface} from '../../core/logger/logger.interface';
 import {OfferEntity} from '../offer/offer.entity';
+import UserDto from './dto/user.dto';
 
 @injectable()
 export default class UserService implements UserServiceInterface {
 
   constructor(
     @inject(Component.LoggerInterface) private readonly logger: LoggerInterface,
-    @inject(Component.UserModel) private readonly userModel: types.ModelType<UserEntity>
+    @inject(Component.UserModel) private readonly userModel: types.ModelType<UserEntity>,
+    @inject(Component.OfferModel) private readonly offerModel: types.ModelType<OfferEntity>
   ) {
   }
 
@@ -21,7 +23,7 @@ export default class UserService implements UserServiceInterface {
     const user = new UserEntity(dto);
     user.setPassword(dto.password, salt);
 
-    const result = await this.userModel.create(dto);
+    const result = await this.userModel.create(user);
     this.logger.info(`New user created with: ${user.email}`);
 
     return result;
@@ -42,25 +44,31 @@ export default class UserService implements UserServiceInterface {
   }
 
   public async findFavorites(userId: string): Promise<DocumentType<OfferEntity>[]> {
-    const offers = await this.userModel.findById(userId).select('favorite');
+    const offers = await this.userModel.findById(userId).select('favorites');
     if (!offers) {
       return [];
     }
 
-    return this.userModel
-      .find({_id: { $in: offers.favorites }});
+    return this.offerModel
+      .find({_id: { $in: offers }}).populate('userId');
   }
 
   public async findById(userId: string): Promise<DocumentType<UserEntity> | null> {
     return this.userModel.findOne({'_id': userId});
   }
 
-  public addToFavoritesById(userId: string, offerId: string): Promise<DocumentType<OfferEntity>[] | null> {
-    return this.userModel.findByIdAndUpdate(userId, {$push: {favorite: offerId}, new: true});
+  public async addToFavoritesById(userId: string, offerId: string): Promise<void> {
+    await this.userModel.updateOne(
+      {_id: userId},
+      { $addToSet: { favorite: offerId } }
+    );
   }
 
-  public removeFromFavoritesById(userId: string, offerId: string): Promise<DocumentType<OfferEntity>[] | null> {
-    return this.userModel.findByIdAndUpdate(userId, {$pull: {favorite: offerId}, new: true});
+  public async removeFromFavoritesById(userId: string, offerId: string): Promise<void> {
+    await this.userModel.updateOne(
+      {_id: userId},
+      { $pull: { favorite: offerId } }
+    );
   }
 
   public async verifyUser(email: string, password: string, salt: string): Promise<DocumentType<UserEntity> | null> {
@@ -70,5 +78,11 @@ export default class UserService implements UserServiceInterface {
     } else {
       return null;
     }
+  }
+
+  public async updateById(userId: string, dto: UserDto): Promise<DocumentType<UserEntity> | null> {
+    return this.userModel
+      .findByIdAndUpdate(userId, dto, {new: true})
+      .exec();
   }
 }

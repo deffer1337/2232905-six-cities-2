@@ -14,5 +14,7 @@ export const Component = {
   ExceptionFilter: Symbol.for('ExceptionFilter'),
   OfferController: Symbol.for('OfferController'),
   UserController: Symbol.for('UserController'),
-  TokenServiceInterface: Symbol.for('TokenServiceInterface')
+  TokenServiceInterface: Symbol.for('TokenServiceInterface'),
+  IssuedTokenServiceInterface: Symbol.for('IssuedTokenServiceInterface'),
+  IssuedTokenModel: Symbol.for('IssuedTokenModel')
 } as const;

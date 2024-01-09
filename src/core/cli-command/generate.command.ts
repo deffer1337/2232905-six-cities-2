@@ -3,7 +3,7 @@ import {MockData} from '../../types/mock-data.type.js';
 import OfferGenerator from '../../modules/offer-generator.js';
 import TSVFileWriter from '../file-writer/tsv-file-writers.js';
 import ConsoleLoggerService from '../logger/console-logger.service.js';
-import {LoggerInterface} from '../logger/logger.interface';
+import {LoggerInterface} from '../logger/logger.interface.js';
 
 
 export default class GenerateCommand implements CliCommandInterface {

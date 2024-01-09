@@ -1,8 +1,8 @@
-import {OfferType} from '../../types/offer.type';
-import {HouseType} from '../../types/house-type.enum';
-import {Facilities} from '../../types/facilities.enum';
-import {UserTypeEnum} from '../../types/user-type.enum';
-import {CityEnum} from '../../types/city.enum';
+import {OfferType} from '../../types/offer.type.js';
+import {HouseType} from '../../types/house-type.enum.js';
+import {Facilities} from '../../types/facilities.enum.js';
+import {UserTypeEnum} from '../../types/user-type.enum.js';
+import {CityEnum} from '../../types/city.enum.js';
 export function createOffer(offer: string): OfferType {
   const offerRow = offer.replace('\n', '').split('\t');
   const [name,
@@ -36,7 +36,7 @@ export function createOffer(offer: string): OfferType {
     premium: premium as unknown as boolean,
     favorite: favorite as unknown as boolean,
     rating: parseFloat(rating),
-    housingType: housingType as unknown as HouseType,
+    houseType: housingType as unknown as HouseType,
     roomCount: parseInt(roomCount, 10),
     guestCount: parseInt(guestCount, 10),
     cost: parseInt(cost, 10),

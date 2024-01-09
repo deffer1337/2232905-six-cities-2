@@ -2,7 +2,7 @@ import { inject, injectable } from 'inversify';
 import mongoose, { Mongoose } from 'mongoose';
 import { setTimeout } from 'node:timers/promises';
 import { LoggerInterface } from '../logger/logger.interface.js';
-import {DBClientInterface} from './db-client.interface';
+import {DBClientInterface} from './db-client.interface.js';
 import {Component} from '../../types/component.enum.js';
 
 const RETRY_COUNT = 5;

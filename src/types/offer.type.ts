@@ -15,7 +15,7 @@ export type OfferType = {
   premium: boolean;
   favorite: boolean;
   rating: number;
-  housingType: HouseType;
+  houseType: HouseType;
   roomCount: number;
   guestCount: number;
   cost: number;
