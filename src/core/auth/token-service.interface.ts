@@ -1,4 +1,4 @@
-import {JWTPayload} from "jose";
+import {JWTPayload} from 'jose';
 
 export interface TokenServiceInterface {
   issueToken(algorithm: string, jwtSecret: string, payload: object): Promise<string>

@@ -36,7 +36,7 @@ export function createOffer(offer: string): OfferType {
     premium: premium as unknown as boolean,
     favorite: favorite as unknown as boolean,
     rating: parseFloat(rating),
-    housingType: housingType as unknown as HouseType,
+    houseType: housingType as unknown as HouseType,
     roomCount: parseInt(roomCount, 10),
     guestCount: parseInt(guestCount, 10),
     cost: parseInt(cost, 10),

@@ -72,8 +72,8 @@ paths:
                 $ref: '#/components/schemas/OfferRDO'
         404:
           description: Offer not found
-        403:
-          description: Forbidden
+        422:
+          description: Unprocessable Entity
 
     put:
       tags:
@@ -93,6 +93,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OfferRDO'
+        401:
+          description: Unauthorized
         404:
           description: Offer not found
         422:
@@ -110,8 +112,10 @@ paths:
           description: Offer deleted successfully
         404:
           description: Offer not found
-        400:
-          description: Bad request
+        403:
+          description: Forbidden
+        422:
+          description: Unprocessable Entity
 
   /offers/{offerId}/comments:
     get:
@@ -122,21 +126,9 @@ paths:
         - name: offerId
           in: path
           required: true
-          description: The ID of the offer to retrieve comments for
+          description: The ID of the offer to retrieve comments.
           schema:
             type: string
-        - name: limit
-          in: query
-          description: The maximum number of comments to return (optional)
-          required: false
-          schema:
-            type: integer
-        - name: offset
-          in: query
-          description: The number of comments to skip (optional)
-          required: false
-          schema:
-            type: integer
       responses:
         200:
           description: Successful response
@@ -148,18 +140,18 @@ paths:
                   $ref: '#/components/schemas/CommentOut'
         404:
           description: Offer not found
-        401:
-          description: Unauthorized
+        422:
+          description: Unprocessable Entity
 
     post:
       tags:
         - Comments
-      summary: Create a new comment for an offer
+      summary: Create a new comment for an offer. Allow user who create offer.
       parameters:
         - name: offerId
           in: path
           required: true
-          description: The ID of the offer to create a comment for
+          description: The ID of the offer to create a comment
           schema:
             type: string
       requestBody:
@@ -180,10 +172,27 @@ paths:
         401:
           description: Unauthorized
 
+  /offers/premium/{city}:
+    get:
+      tags:
+        - Premium offers
+      summary: Get premium offers
+      description: Premium list offers
+      parameters:
+        - name: city
+          in: path
+          required: true
+          description: City for filter premium offers
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successfully get premium offers
+
   /offers/{offerId}/favorites:
     post:
       tags:
-        - Favourites
+        - Favourites offers
       summary: Add an offer to favorites
       description: Add an offer to the user's list of favorites.
       parameters:
@@ -200,10 +209,12 @@ paths:
           description: Offer not found
         401:
           description: Unauthorized
+        422:
+          description: Unprocessable Entity
 
     delete:
       tags:
-        - Favourites
+        - Favourites offers
       summary: Remove an offer from favorites
       description: Remove an offer from the user's list of favorites.
       parameters:
@@ -220,27 +231,96 @@ paths:
           description: Offer not found
         401:
           description: Unauthorized
+        422:
+          description: Unprocessable Entity
 
-  /user:
+  /offers/favorites:
     get:
       tags:
-        - User
-      summary: Get the current user
+        - Favourites offers
+      summary: Get user favourites offers
       responses:
         200:
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserOut'
+          description: Successful get favourites offers
         401:
           description: Unauthorized
 
-  /user/login:
+  /offers/{offerId}/preview-image:
     post:
       tags:
-        - User
-      summary: Login a user
+        - Offers files
+      summary: Upload preview image
+      responses:
+        201:
+          description: Preview image successful upload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageRDO'
+        401:
+          description: User not auth
+        403:
+          description: User not access to object
+        422:
+          description: Validation error
+
+  /offers/{offerId}/image:
+    post:
+      tags:
+        - Offers files
+      summary: Upload image
+      responses:
+        204:
+          description: Image successful upload
+        401:
+          description: User not auth
+        403:
+          description: User not access to object
+        422:
+          description: Validation error
+
+    delete:
+      tags:
+        - Offers files
+      summary: Delete image
+      responses:
+        204:
+          description: Image successful delete
+        401:
+          description: User not auth
+        403:
+          description: User not access to object
+        422:
+          description: Validation error
+
+  /users/sign-up:
+    post:
+      tags:
+        - Users
+      summary: User sign up
+      description: Sign up new user
+      requestBody:
+        description: User information for create
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDTO'
+        required: true
+      responses:
+        "201":
+          description: User successful registration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRDO'
+        "409":
+          description: User with same email exists
+
+  /users/sign-in:
+    post:
+      tags:
+        - Users
+      summary: Sign in a user
       requestBody:
         required: true
         content:
@@ -257,59 +337,37 @@ paths:
                 - password
       responses:
         200:
-          description: User logged in successfully
+          description: User sign in successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserOut'
+                $ref: '#/components/schemas/SignInUserRDO'
         422:
-          description: Unprocessable Entity
+          description: Validation error
 
-  /user/logout:
+  /users/sign-out:
     post:
       tags:
-        - User
-      summary: Logout the current user
+        - Users
+      summary: Sign out the current user
       responses:
         204:
           description: User logged out successfully
         401:
           description: Unauthorized
 
-  /user/register:
+  /users/{userId}/avatar:
     post:
       tags:
-        - User
-      summary: Register a new user
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                email:
-                  type: string
-                avatar:
-                  type: string
-                password:
-                  type: string
-                type:
-                  $ref: '#/components/schemas/UserType'
-              required:
-                - name
-                - email
-                - password
-                - type
+        - Users
+      summary: Upload avatar
       responses:
         201:
-          description: User registered successfully
+          description: Avatar upload successfuly
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserOut'
+                $ref: '#/components/schemas/AvatarRDO'
         422:
           description: Unprocessable Entity
 
@@ -329,6 +387,12 @@ tags:
 
 components:
   schemas:
+    ImageRDO:
+      type: object
+      properties:
+        image:
+          type: string
+
     UserType:
       type: string
       enum:
@@ -375,31 +439,44 @@ components:
         - latitude
         - longitude
 
-    UserOut:
+    UserRDO:
       type: object
       properties:
         id:
           type: number
-        name:
+        username:
           type: string
         email:
           type: string
-        avatarUrl:
+        avatar:
           type: string
-        isPro:
-          type: boolean
-        token: string
+        type:
+          $ref: "#/components/schemas/UserType"
 
-    UserOfferRDO:
+    UserDTO:
       type: object
       properties:
-        id:
-          type: number
-        name:
+        email:
           type: string
-        isPro:
-          type: boolean
-        avatarUrl:
+        username:
+          type: string
+        type:
+          $ref: "#/components/schemas/UserType"
+        password:
+          type: string
+    
+    SignInUserRDO:
+      type: object
+      properties:
+        token:
+          type: string
+        email:
+          type: string
+
+    AvatarRDO:
+      type: object
+      properties:
+        avatar: 
           type: string
 
     OfferDTO:
@@ -483,7 +560,7 @@ components:
           items:
             $ref: '#/components/schemas/Facilities'
         author:
-          $ref: '#/components/schemas/UserOfferRDO'
+          $ref: '#/components/schemas/UserRDO'
         coordinates:
           $ref: '#/components/schemas/Coordinates'
         commentsCount:
@@ -521,7 +598,7 @@ components:
         id:
           type: number
         user:
-          $ref: '#/components/schemas/UserOfferRDO'
+          $ref: '#/components/schemas/UserRDO'
         rating:
           type: number
         comment:

@@ -17,7 +17,7 @@ export class ValidateObjectIdMiddleware implements MiddlewareInterface {
     }
 
     throw new HttpError(
-      StatusCodes.BAD_REQUEST,
+      StatusCodes.UNPROCESSABLE_ENTITY,
       `${objectId} is invalid ObjectID`,
       'ValidateObjectIdMiddleware'
     );

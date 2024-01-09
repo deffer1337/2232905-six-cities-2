@@ -4,9 +4,9 @@ import { StatusCodes } from 'http-status-codes';
 import { createSecretKey } from 'node:crypto';
 import {HttpError} from '../http/http.errors.js';
 import {MiddlewareInterface} from '../middlewares/middleware.interface';
-import {inject} from "inversify";
-import {Component} from "../../types/component.enum";
-import {IssuedTokenServiceInterface} from "../../modules/token/token-service.interface";
+import {inject} from 'inversify';
+import {Component} from '../../types/component.enum';
+import {IssuedTokenServiceInterface} from '../../modules/token/token-service.interface';
 
 export class AuthMiddleware implements MiddlewareInterface {
   constructor(
@@ -29,14 +29,15 @@ export class AuthMiddleware implements MiddlewareInterface {
         createSecretKey(this.jwtSecret, 'utf-8')
       );
 
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      const revoked = await this.issuedTokenService.isRevoked(payload.jti)
+      const revoked = await this.issuedTokenService.isRevoked(payload.jti);
       if (revoked){
         return next(new HttpError(
           StatusCodes.UNAUTHORIZED,
           'Token is revoked',
           'AuthMiddleware'
-          ));
+        ));
       }
 
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment

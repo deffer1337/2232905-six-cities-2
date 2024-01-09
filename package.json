@@ -9,7 +9,7 @@
   ],
   "main": "main.js",
   "scripts": {
-    "start": "npm run build && node ./dist/main.js",
+    "start": "npm run build && node ./dist/src/main.js",
     "start:dev": "npm run ts ./src/main.ts | pino-pretty --colorize --translateTime SYS:standart",
     "build": "npm run clean && npm run compile",
     "lint": "eslint src/ --ext .ts",
@@ -21,6 +21,8 @@
   "devDependencies": {
     "@types/convict": "6.1.1",
     "@types/convict-format-with-validator": "6.0.2",
+    "@types/mime-types": "^2.1.4",
+    "@types/multer": "^1.4.11",
     "@types/node": "18.16.3",
     "@types/uuid": "^9.0.7",
     "@typescript-eslint/eslint-plugin": "5.46.0",
@@ -48,7 +50,9 @@
     "http-status-codes": "2.2.0",
     "inversify": "6.0.1",
     "jose": "^5.2.0",
+    "mime-types": "^2.1.35",
     "mongoose": "^7.6.4",
+    "multer": "^1.4.5-lts.1",
     "pino": "8.7.0",
     "reflect-metadata": "0.1.13",
     "uuid": "^9.0.1"

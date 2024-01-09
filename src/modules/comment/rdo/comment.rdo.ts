@@ -16,5 +16,5 @@ export default class CommentRdo {
 
   @Expose({name: 'userId'})
   @Type(() => UserRdo)
-  user!: UserType;
+    user!: UserType;
 }

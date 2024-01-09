@@ -1,8 +1,8 @@
-import {inject, injectable} from "inversify";
-import {IssuedTokenServiceInterface} from "./token-service.interface";
-import {Component} from "../../types/component.enum";
-import {types} from "@typegoose/typegoose";
-import {IssuedTokenEntity} from "./token.entity";
+import {inject, injectable} from 'inversify';
+import {IssuedTokenServiceInterface} from './token-service.interface';
+import {Component} from '../../types/component.enum';
+import {types} from '@typegoose/typegoose';
+import {IssuedTokenEntity} from './token.entity';
 
 
 @injectable()
@@ -16,7 +16,7 @@ export default class IssuedTokenService implements IssuedTokenServiceInterface {
     await this.issuedTokenModel.updateOne(
       {_jti: jti},
       {revoked: true}
-    )
+    );
   }
 
   public async issue(userId: string, expiresAt: number, jti: string){
@@ -26,7 +26,7 @@ export default class IssuedTokenService implements IssuedTokenServiceInterface {
         expiresAt: expiresAt,
         jti: jti,
       }
-    )
+    );
   }
 
   public async isRevoked(jti: string): Promise<boolean>{

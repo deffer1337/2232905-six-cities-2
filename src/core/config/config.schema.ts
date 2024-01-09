@@ -13,6 +13,8 @@ export type ConfigSchema = {
   DB_NAME: string;
   JWT_SECRET: string;
   JWT_ALGORITHM: string;
+  UPLOAD_DIRECTORY: string;
+  STATIC_DIRECTORY_PATH: string;
 }
 
 export const configSchema = convict<ConfigSchema>({
@@ -69,5 +71,17 @@ export const configSchema = convict<ConfigSchema>({
     format: String,
     env: 'JWT_ALGORITHM',
     default: 'HS256'
+  },
+  UPLOAD_DIRECTORY: {
+    doc: 'Directory for files',
+    format: String,
+    env: 'UPLOAD_DIRECTORY',
+    default: './files/'
+  },
+  STATIC_DIRECTORY_PATH: {
+    doc: 'Static directory path',
+    format: String,
+    env: 'STATIC_DIRECTORY_PATH',
+    default: './static/'
   }
 });

@@ -3,12 +3,13 @@ import {inject, injectable} from 'inversify';
 import {ConfigInterface} from '../core/config/config.interface.js';
 import {ConfigSchema} from '../core/config/config.schema.js';
 import {Component} from '../types/component.enum.js';
-import {DBClientInterface} from '../core/db-client/db-client.interface';
-import {getMongoURI} from '../core/helpers/db';
+import {DBClientInterface} from '../core/db-client/db-client.interface.js';
+import {getMongoURI} from '../core/helpers/db.js';
 import express, {Express} from 'express';
-import {ControllerInterface} from "../core/controller/controller.interface";
-import {ExceptionFilter} from "../core/http/exception-filter.interface";
-import {AuthMiddleware} from "../core/auth/auth.middleware";
+import {ControllerInterface} from '../core/controller/controller.interface.js';
+import {ExceptionFilter} from '../core/http/exception-filter.interface.js';
+import {AuthMiddleware} from '../core/auth/auth.middleware.js';
+import {IssuedTokenServiceInterface} from '../modules/token/token-service.interface.js';
 
 
 @injectable()
@@ -22,6 +23,7 @@ export default class RestApplication {
     @inject(Component.OfferController) private readonly offerController: ControllerInterface,
     @inject(Component.UserController) private userController: ControllerInterface,
     @inject(Component.ExceptionFilter) private readonly appExceptionFilter: ExceptionFilter,
+    @inject(Component.IssuedTokenServiceInterface) private readonly issuedTokenService: IssuedTokenServiceInterface
   ) {
     this.app = express();
   }
@@ -42,8 +44,15 @@ export default class RestApplication {
 
   private async initMiddleware() {
     this.app.use(express.json());
-
-    const authMiddleware = new AuthMiddleware(this.config.get('JWT_SECRET'));
+    this.app.use(
+      '/upload',
+      express.static(this.config.get('UPLOAD_DIRECTORY'))
+    );
+    this.app.use(
+      '/static',
+      express.static(this.config.get('STATIC_DIRECTORY_PATH'))
+    );
+    const authMiddleware = new AuthMiddleware(this.config.get('JWT_SECRET'), this.issuedTokenService);
     this.app.use(authMiddleware.execute.bind(authMiddleware));
   }
 

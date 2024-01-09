@@ -8,7 +8,7 @@ export function getErrorMessage(error: unknown): string {
 export const createSHA256 = (line: string, salt: string): string => {
   const hashed = crypto.createHmac('sha256', salt);
   return hashed.update(line).digest('hex');
-}
+};
 
 export function fillDTO<T, V>(someDto: ClassConstructor<T>, plainObject: V) {
   return plainToInstance(someDto, plainObject, { excludeExtraneousValues: true });

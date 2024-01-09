@@ -12,7 +12,7 @@ export class ValidateDTOMiddleware implements MiddlewareInterface {
     const errors = await validate(dto);
 
     if (errors.length > 0) {
-      res.status(StatusCodes.BAD_REQUEST).send(errors);
+      res.status(StatusCodes.UNPROCESSABLE_ENTITY).send(errors);
       return;
     }
 

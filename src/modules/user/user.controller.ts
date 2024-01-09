@@ -12,11 +12,16 @@ import {StatusCodes} from 'http-status-codes';
 import {ConfigInterface} from '../../core/config/config.interface.js';
 import {ConfigSchema} from '../../core/config/config.schema.js';
 import UserRdo from './rdo/user.rdo.js';
-import LoginUserDto from './dto/login-user.dto';
-import {TokenServiceInterface} from '../../core/auth/token-service.interface';
-import SignInUserRdo from './rdo/signin.user.rdo';
-import {IssuedTokenServiceInterface} from '../token/token-service.interface';
-import {ExtendedRequestInterface} from '../../types/extended-request';
+import LoginUserDto from './dto/login-user.dto.js';
+import {TokenServiceInterface} from '../../core/auth/token-service.interface.js';
+import SignInUserRdo from './rdo/signin.user.rdo.js';
+import {IssuedTokenServiceInterface} from '../token/token-service.interface.js';
+import {ExtendedRequestInterface} from '../../types/extended-request.js';
+import {ValidateDTOMiddleware} from '../../core/middlewares/validate-dto.middleware.js';
+import {CheckUserAuthMiddleware} from '../../core/middlewares/check-user-auth.middleware.js';
+import {ValidateObjectIdMiddleware} from '../../core/middlewares/validate-object-id.midlleware.js';
+import {UploadFileMiddleware} from '../../core/middlewares/upload-file.middleware.js';
+import AvatarRdo from './rdo/avatar.rdo';
 
 
 @injectable()
@@ -31,9 +36,37 @@ export default class UserController extends Controller {
 
     this.logger.info('Register routes for CategoryController…');
 
-    this.addRoute({path: '/sign-up', method: HttpMethod.Get, handler: this.signUp});
-    this.addRoute({path: '/sign-in', method: HttpMethod.Post, handler: this.signIn});
-    this.addRoute({path: '/sign-out', method: HttpMethod.Post, handler: this.logout});
+    this.addRoute({
+      path: '/sign-up',
+      method: HttpMethod.Get,
+      handler: this.signUp,
+      middlewares: [
+        new ValidateDTOMiddleware(UserDto),
+      ]
+    });
+    this.addRoute({
+      path: '/sign-in',
+      method: HttpMethod.Post,
+      handler: this.signIn,
+      middlewares: [
+        new ValidateDTOMiddleware(LoginUserDto),
+      ]
+    });
+    this.addRoute({
+      path: '/sign-out',
+      method: HttpMethod.Post,
+      handler: this.logout,
+      middlewares: [new CheckUserAuthMiddleware()],
+    });
+    this.addRoute({
+      path: '/:userId/avatar',
+      method: HttpMethod.Post,
+      handler: this.uploadAvatar,
+      middlewares: [
+        new ValidateObjectIdMiddleware('userId'),
+        new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'avatar'),
+      ]
+    });
   }
 
   public async signUp(
@@ -105,4 +138,14 @@ export default class UserController extends Controller {
 
     this.noContent(res, {token});
   }
+
+  public async uploadAvatar(req: Request, res: Response) {
+    const {userId} = req.params;
+    const uploadFile = {avatar: req.file?.filename};
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    await this.userService.updateById(userId, uploadFile);
+    this.created(res, fillDTO(AvatarRdo, uploadFile));
+  }
+
 }

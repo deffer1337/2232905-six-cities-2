@@ -7,6 +7,7 @@ import {Component} from '../../types/component.enum.js';
 import {types} from '@typegoose/typegoose';
 import {LoggerInterface} from '../../core/logger/logger.interface';
 import {OfferEntity} from '../offer/offer.entity';
+import UserDto from './dto/user.dto';
 
 @injectable()
 export default class UserService implements UserServiceInterface {
@@ -77,5 +78,11 @@ export default class UserService implements UserServiceInterface {
     } else {
       return null;
     }
+  }
+
+  public async updateById(userId: string, dto: UserDto): Promise<DocumentType<UserEntity> | null> {
+    return this.userModel
+      .findByIdAndUpdate(userId, dto, {new: true})
+      .exec();
   }
 }
