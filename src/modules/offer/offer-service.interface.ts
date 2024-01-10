@@ -5,7 +5,7 @@ import {ResourceExistsInterface} from '../../types/resource-exists.interface';
 import {FindResourceInterface} from '../../types/find-resource.interface';
 
 export interface OfferServiceInterface extends ResourceExistsInterface, FindResourceInterface{
-  create(dto: OfferDto): Promise<DocumentType<OfferEntity>>;
+  create(userId: string, dto: OfferDto): Promise<DocumentType<OfferEntity>>;
   findById(resourceId: string): Promise<DocumentType<OfferEntity> | null>;
   find(count: number | undefined): Promise<DocumentType<OfferEntity>[]>;
   deleteById(offerId: string): Promise<DocumentType<OfferEntity> | null>;

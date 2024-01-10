@@ -14,7 +14,7 @@ export default class IssuedTokenService implements IssuedTokenServiceInterface {
 
   public async revoke(jti:string){
     await this.issuedTokenModel.updateOne(
-      {_jti: jti},
+      {jti: jti},
       {revoked: true}
     );
   }
@@ -30,7 +30,7 @@ export default class IssuedTokenService implements IssuedTokenServiceInterface {
   }
 
   public async isRevoked(jti: string): Promise<boolean>{
-    const issuedToken = await this.issuedTokenModel.findOne({_jti: jti});
+    const issuedToken = await this.issuedTokenModel.findOne({jti: jti});
     if (!issuedToken) {
       return false;
     }

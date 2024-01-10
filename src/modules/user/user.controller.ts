@@ -121,18 +121,8 @@ export default class UserController extends Controller {
   }
 
   public async logout(req: ExtendedRequestInterface, res: Response): Promise<void> {
-    const [, token] = String(req.headers.authorization?.split(' '));
-
-    if (!req.user) {
-      throw new HttpError(
-        StatusCodes.UNAUTHORIZED,
-        'Unauthorized',
-        'UserController'
-      );
-    }
-
+    const token = String(req.headers.authorization?.split(' ')[1]);
     const rawToken = await this.tokenService.getRawToken(token);
-
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     await this.issuedTokenService.revoke(rawToken.jti);

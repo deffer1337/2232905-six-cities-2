@@ -18,13 +18,13 @@ export default class CommentService implements CommentServiceInterface {
 
   public async createForOffer(userId: string, offerId: string, dto: CommentDto): Promise<DocumentType<CommentEntity>> {
     const comment = await this.commentModel.create({...dto, offerId: offerId, userId: userId});
+    await comment.populate('userId');
     await this.offerService.incComment(offerId);
 
-    const offer = await this.offerService.findById(offerId);
-
-    const count = offer?.commentsCount ?? 1;
-    const rating = offer?.rating ?? 0;
-    const newRating = (rating + dto.rating) / count;
+    const comments = await this.findByOfferId(offerId);
+    const offersCount = comments.length;
+    const sumRating = comments.reduce((accumulator, current) => current.rating + accumulator, 0);
+    const newRating = sumRating / offersCount;
     await this.offerService.updateRating(offerId, newRating);
     return comment;
   }

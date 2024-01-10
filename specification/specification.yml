@@ -137,7 +137,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/CommentOut'
+                  $ref: '#/components/schemas/CommentRDO'
         404:
           description: Offer not found
         422:
@@ -159,14 +159,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CommentOut'
+              $ref: '#/components/schemas/CommentDTO'
       responses:
         201:
           description: Comment created successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CommentOut'
+                $ref: '#/components/schemas/CommentRDO'
         422:
           description: Unprocessable Entity
         401:
@@ -234,7 +234,7 @@ paths:
         422:
           description: Unprocessable Entity
 
-  /offers/favorites:
+  /offers/users/favorites:
     get:
       tags:
         - Favourites offers
@@ -279,6 +279,7 @@ paths:
         422:
           description: Validation error
 
+  /offers/{offerId}/image/{filename}:
     delete:
       tags:
         - Offers files
@@ -464,7 +465,7 @@ components:
           $ref: "#/components/schemas/UserType"
         password:
           type: string
-    
+
     SignInUserRDO:
       type: object
       properties:
@@ -476,7 +477,7 @@ components:
     AvatarRDO:
       type: object
       properties:
-        avatar: 
+        avatar:
           type: string
 
     OfferDTO:
@@ -484,22 +485,36 @@ components:
       properties:
         name:
           type: string
+          example: 'Beautiful home'
+          minLength: 10
+          maxLength: 100
         description:
           type: string
+          example: 'WowWowWowWowWowWowWowWowWowWowWowWowWowWowWowWowWowWow'
+          minLength: 20
+          maxLength: 1024
         city:
           $ref: '#/components/schemas/CityEnum'
         isPremium:
           type: boolean
-        previewImage:
-          type: string
+          example: false
         houseType:
           $ref: '#/components/schemas/HouseType'
         roomCount:
           type: number
+          example: 2
+          minimum: 1
+          maximum: 8
         guestCount:
           type: number
+          example: 2
+          minimum: 1
+          maximum: 10
         cost:
           type: number
+          example: 123
+          minimum: 100
+          maximum: 100000
         facilities:
           type: array
           items:
@@ -592,25 +607,24 @@ components:
         commentsCount:
           type: number
 
-    CommentOut:
+    CommentRDO:
       type: object
       properties:
         id:
           type: number
-        user:
-          $ref: '#/components/schemas/UserRDO'
+        text:
+          type: string
         rating:
           type: number
-        comment:
+        publicationDate:
           type: string
-        date:
-          type: string
-          format: date-time
+        user:
+          $ref: '#/components/schemas/UserRDO'
 
-    CommentIn:
+    CommentDTO:
       type: object
       properties:
-        comment:
+        text:
           type: string
         rating:
           type: number

@@ -50,7 +50,7 @@ export default class UserService implements UserServiceInterface {
     }
 
     return this.offerModel
-      .find({_id: { $in: offers }}).populate('userId');
+      .find({_id: { $in: offers.favorites }}).populate('userId');
   }
 
   public async findById(userId: string): Promise<DocumentType<UserEntity> | null> {
@@ -60,14 +60,14 @@ export default class UserService implements UserServiceInterface {
   public async addToFavoritesById(userId: string, offerId: string): Promise<void> {
     await this.userModel.updateOne(
       {_id: userId},
-      { $addToSet: { favorite: offerId } }
+      { $addToSet: { favorites: offerId } }
     );
   }
 
   public async removeFromFavoritesById(userId: string, offerId: string): Promise<void> {
     await this.userModel.updateOne(
       {_id: userId},
-      { $pull: { favorite: offerId } }
+      { $pull: { favorites: offerId } }
     );
   }
 

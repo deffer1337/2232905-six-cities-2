@@ -15,8 +15,10 @@ export default class OfferService implements OfferServiceInterface {
   ) {
   }
 
-  public async create(dto: OfferDto): Promise<DocumentType<OfferEntity>> {
-    return await this.offerModel.create(dto);
+  public async create(userId: string, dto: OfferDto): Promise<DocumentType<OfferEntity>> {
+    const offer = await this.offerModel.create({...dto, userId: userId});
+    await offer.populate('userId');
+    return offer;
   }
 
   public async findById(resourceId: string): Promise<DocumentType<OfferEntity> | null> {
@@ -44,7 +46,7 @@ export default class OfferService implements OfferServiceInterface {
 
   public async findPremiumByCity(city: string): Promise<DocumentType<OfferEntity>[]> {
     return this.offerModel
-      .find({city: city, premium: true})
+      .find({city: city, isPremium: true})
       .sort({createdAt: SortType.Desc})
       .limit(MAX_PREMIUM_OFFERS_COUNT)
       .populate('userId')

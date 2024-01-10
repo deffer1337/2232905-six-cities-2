@@ -76,12 +76,12 @@ export const configSchema = convict<ConfigSchema>({
     doc: 'Directory for files',
     format: String,
     env: 'UPLOAD_DIRECTORY',
-    default: '/files/'
+    default: './files/'
   },
   STATIC_DIRECTORY_PATH: {
     doc: 'Static directory path',
     format: String,
     env: 'STATIC_DIRECTORY_PATH',
-    default: '/static/'
+    default: './static/'
   }
 });

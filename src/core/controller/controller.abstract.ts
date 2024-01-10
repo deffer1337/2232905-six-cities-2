@@ -21,7 +21,13 @@ export abstract class Controller implements ControllerInterface {
   public addRoute(route: RouteInterface) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    this._router[route.method](route.path, asyncHandler(route.handler.bind(this)));
+    const wrapperAsyncHandler = asyncHandler(route.handler.bind(this));
+    const middlewareHandlers = route.middlewares?.map(
+      (item) => asyncHandler(item.execute.bind(item))
+    );
+    const allHandlers = middlewareHandlers ? [...middlewareHandlers, wrapperAsyncHandler] : wrapperAsyncHandler;
+
+    this._router[route.method](route.path, allHandlers);
     this.logger.info(`Route registered: ${route.method.toUpperCase()} ${route.path}`);
   }
 

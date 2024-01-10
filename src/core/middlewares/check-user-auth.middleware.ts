@@ -6,7 +6,7 @@ import {ExtendedRequestInterface} from '../../types/extended-request.js';
 
 export class CheckUserAuthMiddleware implements MiddlewareInterface {
   public async execute({ user }: ExtendedRequestInterface, _res: Response, next: NextFunction): Promise<void> {
-    if (! user) {
+    if (user === undefined) {
       throw new HttpError(
         StatusCodes.UNAUTHORIZED,
         'Unauthorized',

@@ -29,7 +29,7 @@ export default class OfferDto {
   @IsBoolean({message: 'field premium must be boolean'})
   public isPremium!: boolean;
 
-  @IsEnum(HouseType, {message: 'type must be one of the housing types'})
+  @IsEnum(HouseType, {message: 'type must be one of the house types'})
   public houseType!: HouseType;
 
   @Min(1, {message: 'Min count of rooms is 1'})

@@ -24,6 +24,7 @@ import {UploadFileMiddleware} from '../../core/middlewares/upload-file.middlewar
 import {ConfigInterface} from '../../core/config/config.interface.js';
 import {ConfigSchema} from '../../core/config/config.schema.js';
 import ImageRdo from '../comment/rdo/image.rdo.js';
+import {OfferRdo} from './rdo/offer.rdo.js';
 
 @injectable()
 export default class OfferController extends Controller {
@@ -130,7 +131,7 @@ export default class OfferController extends Controller {
       ]
     });
     this.addRoute({
-      path: '/favorites',
+      path: '/users/favorites',
       method: HttpMethod.Get,
       handler: this.showFavorites,
       middlewares:[
@@ -160,7 +161,7 @@ export default class OfferController extends Controller {
       ]
     });
     this.addRoute({
-      path: '/:offerId/image',
+      path: '/:offerId/image/:filename',
       method: HttpMethod.Delete,
       handler: this.removeImage,
       middlewares: [
@@ -179,21 +180,21 @@ export default class OfferController extends Controller {
   }
 
   public async create(
-    { body }: Request<Record<string, unknown>, Record<string, unknown>, OfferDto>,
+    { body , user}: ExtendedRequestInterface,
     res: Response
   ): Promise<void> {
-    const result = await this.offerService.create(body);
-    this.created(res, result);
+    const result = await this.offerService.create(user.id, body);
+    this.created(res, fillDTO(OfferRdo, result));
   }
 
   public async show({params}: Request<Record<string, unknown>>, res: Response): Promise<void> {
     const offer = await this.offerService.findById(`${params.offerId}`);
-    this.ok(res, offer);
+    this.ok(res, fillDTO(OfferRdo, offer));
   }
 
   public async update(req: ExtendedRequestInterface, res: Response): Promise<void> {
     const updatedOffer = await this.offerService.updateById(`${req.params.offerId}`, req.body);
-    this.ok(res, updatedOffer);
+    this.ok(res, fillDTO(OfferRdo,updatedOffer));
   }
 
   public async delete(req: ExtendedRequestInterface, res: Response): Promise<void> {
@@ -253,10 +254,13 @@ export default class OfferController extends Controller {
   }
 
   public async removeImage(req: Request, res: Response) {
-    const {offerId} = req.params;
+    // For the sake of time efficiency in the educational project, the file storage implementation is structured as follows.
+    // In a real-world project, it is necessary to store both the fileId and the actual content.
+    // Consequently, for file deletion, the fileId will be passed accordingly.
+    const {offerId, filename} = req.params;
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    await this.offerService.removeImage(offerId, req.file?.filename);
+    await this.offerService.removeImage(offerId, filename);
     this.noContent(res, 'Image was removed');
   }
 }
