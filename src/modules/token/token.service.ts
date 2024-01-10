@@ -1,4 +1,5 @@
 import {inject, injectable} from 'inversify';
+import {DocumentType} from '@typegoose/typegoose/lib/types.js';
 import {IssuedTokenServiceInterface} from './token-service.interface.js';
 import {Component} from '../../types/component.enum.js';
 import {types} from '@typegoose/typegoose';
@@ -35,5 +36,9 @@ export default class IssuedTokenService implements IssuedTokenServiceInterface {
       return false;
     }
     return issuedToken.revoked;
+  }
+
+  public async getIssuedToken(jti: string): Promise<DocumentType<IssuedTokenEntity> | null>{
+    return await this.issuedTokenModel.findOne({jti: jti}).populate('userId').exec();
   }
 }

@@ -372,6 +372,20 @@ paths:
         422:
           description: Unprocessable Entity
 
+  /users/check-auth:
+    post:
+      tags:
+        - Users
+      summary: Check user auth
+      responses:
+        200:
+          description: User authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRDO'
+        401:
+          description: User not authenticated
 
 tags:
   - name: Offers

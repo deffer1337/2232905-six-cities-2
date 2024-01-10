@@ -1,4 +1,4 @@
-import { inject, injectable } from 'inversify';
+import {inject, injectable} from 'inversify';
 import {Request, Response} from 'express';
 import {Component} from '../../types/component.enum.js';
 import {Controller} from '../../core/controller/controller.abstract.js';
@@ -66,6 +66,12 @@ export default class UserController extends Controller {
         new ValidateObjectIdMiddleware('userId'),
         new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'avatar'),
       ]
+    });
+    this.addRoute({
+      path: '/check-auth',
+      method: HttpMethod.Post,
+      handler: this.checkAuth,
+      middlewares: [],
     });
   }
 
@@ -139,4 +145,20 @@ export default class UserController extends Controller {
     this.created(res, fillDTO(AvatarRdo, uploadFile));
   }
 
+  public async checkAuth(req: Request, res: Response) {
+    const token = String(req.headers.authorization?.split(' ')[1]);
+    const rawToken = await this.tokenService.getRawToken(token);
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const issuedToken = await this.issuedTokenService.getIssuedToken(rawToken.jti);
+    if (!issuedToken || issuedToken.revoked) {
+      throw new HttpError(
+        StatusCodes.UNAUTHORIZED,
+        'Unauthorized',
+        'UserController',
+      );
+    }
+
+    this.ok(res, fillDTO(UserRdo, issuedToken.userId));
+  }
 }
